@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Snake</title>
+
+
+    <script>
+        var snake = {
+            x: 60,
+            y: 60,
+            size: 20,
+            tail: [{
+                x: 40,
+                y: 40
+            }],
+            color: "green"
+        }
+
+        var frog = {
+            x: 80,
+            y: 80,
+            size: 20,
+            color: "yellow"
+        }
+        var score = 0;
+        var direction = 0;
+        var position = [
+            [snake.x, snake.y]
+        ];
+        var canvas;
+
+
+        function rysunek() {
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (var i = 0; i < position.length; i++) {
+
+                var single = position[i].slice();
+                ctx.fillStyle = "green";
+                ctx.fillRect(single[0], single[1], snake.size, snake.size);
+            }
+
+            ctx.fillStyle = frog.color;
+            ctx.fillRect(frog.x, frog.y, frog.size, frog.size);
+        }
+
+        function ruch() {
+            var klawiatura = position[0].slice();
+
+            switch (direction) {
+                case 1:
+                    klawiatura[0] -= 20;
+                    console.log("lewo")
+                    break;
+                case 2:
+                    klawiatura[1] -= 20;
+                    console.log("gora")
+                    break;
+                case 3:
+                    klawiatura[0] += 20;
+                    console.log("prawo")
+                    break;
+                case 4:
+                    klawiatura[1] += 20;
+                    console.log("dol")
+                    break;
+            }
+
+            position.unshift(klawiatura);
+            position.pop();
+        }
+        
+
+        function wiekszywaz() {
+            var klawiatura = position[0].slice();
+            switch (direction) {
+                case 1:
+                    klawiatura[0] -= 20;
+                    console.log("lewo")
+                    break;
+                case 2:
+                    klawiatura[1] -= 20;
+                    console.log("gora")
+                    break;
+                case 3:
+                    klawiatura[0] += 20;
+                    console.log("prawi")
+                    break;
+                case 4:
+                    klawiatura[1] += 20;
+                    console.log("dol")
+                    break;
+            }
+            score = score + 1;
+
+            console.log(score);
+            position.unshift(klawiatura);
+        }
+        function jedzonko() {
+            var rand = Math.ceil(Math.random() * 5) * frog.size * 4;
+            while (rand >= canvas.width) {
+                rand = Math.ceil(Math.random() * 5) * frog.size * 4;
+            }
+            frog.x = rand;
+
+            rand = Math.ceil(Math.random() * 5) * frog.size * 4;
+            while (rand >= canvas.height) {
+                rand = Math.ceil(Math.random() * 5) * frog.size * 4;
+            }
+            frog.y = rand;
+        }
+        
+        function kolejnyruch() {
+
+            var klawiatura = position[0].slice();
+            if (klawiatura[0] === frog.x && klawiatura[1] === frog.y) {
+                wiekszywaz();
+                jedzonko();
+            } else {
+                ruch();
+            }
+
+            rysunek();
+
+            if (zderzenie(klawiatura[0], klawiatura[1])) {
+                var direction = 0;
+                snake = {
+                    x: 60,
+                    y: 60,
+                    size: 20,
+                    color: "red"
+                }
+                position = [
+                    [snake.x, snake.y]
+                ];
+                alert("Przegrywasz");
+
+            }
+        }
+
+
+        function zderzenie(x, y) {
+           
+            var i, l;
+            if (x < 0 || x > canvas.width - 1) {
+                return true;
+            }
+            if (y < 0 || y > canvas.height - 1) {
+                return true;
+            }
+
+            return false;
+        }
+	
+        function ogolna() {
+            canvas = document.getElementById("canvas");
+            document.body.onkeydown = function(e) {
+                e = e || window.event;
+                switch (e.keyCode) {
+                    case 37:
+                        direction = 1;
+                        console.log("lewo")
+                        break;
+                    case 38:
+                        direction = 2;
+                        console.log("gora")
+                        break;
+                    case 39:
+                        direction = 3;
+                        console.log("prawo")
+                        break;
+                    case 40:
+                        direction = 4;
+                        console.log("dol")
+                        break;
+                }
+            }
+
+            setInterval(kolejnyruch, 90);
+
+            console.log("ogolna");
+        }
+       
+
+        window.onload = ogolna;
+    </script>
+</head>
+
+<body>
+
+    <canvas id="canvas" width="900" height="700" style="border: 5px solid grey;"></canvas>
+	
+</body>
+
+</html>
